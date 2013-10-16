@@ -15,7 +15,7 @@
             <property name="ignore-resource-not-found"/>
         </properties>
     </global-element>
-    <flow SubFlow="false" name="service-flow" entity-id="d168c46a-5c0f-40b0-81e9-95c5b1c90783">
+    <flow SubFlow="false" name="service-flow" entity-id="ee271356-5bfc-4b5e-8403-a1d98db9970b">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -91,7 +91,7 @@
             </endpoint>
         </lane>
     </flow>
-    <flow SubFlow="false" name="sync-service-endpoint-flow" entity-id="3e0389c8-0fe0-416d-95ef-9dac94023037">
+    <flow SubFlow="false" name="sync-service-endpoint-flow" entity-id="d5d2e970-87af-41d4-bf55-d4db2abe451f">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
@@ -130,34 +130,31 @@
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
-            <pattern type="http://www.mulesoft.org/schema/mule/cxf/soapComponent" name="SOAP" entity-id="4eb902ae-6925-43d2-ab8d-d7aea30a736b">
-                <graphicalData height="0" width="0" y="0" x="0"/>
-            </pattern>
             <pattern type="http://www.mulesoft.org/schema/mule/xml/schema-validation-filter" name="Schema Validation" entity-id="Schema Validation#1">
-                <graphicalData height="67" width="112" y="242" x="149"/>
+                <graphicalData height="67" width="112" y="242" x="277"/>
                 <properties>
                     <property value="true" name="returnResult"/>
                     <property value="no/schibsted/xml/finance/invoice/v1/invoice.xsd" name="schemaLocations"/>
                     <property name="schemaLanguage"/>
-                    <property value="9" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
                 </properties>
             </pattern>
             <pattern type="http://www.mulesoft.org/schema/mule/core/flow-ref" name="Call Service Endpoint Flow" entity-id="Flow Reference#1">
-                <graphicalData height="67" width="154" y="242" x="321"/>
+                <graphicalData height="67" width="154" y="242" x="449"/>
                 <properties>
                     <property value="service-flow" name="name"/>
-                    <property value="10" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="example-service-endpointFlow1" entity-id="ccd7cea9-1bb5-4d5c-b09f-988543e1996a">
+    <flow SubFlow="false" name="example-service-endpointFlow1" entity-id="64948d2e-b08d-426f-af57-0ce3dadfa47a">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
             <property name="bussinessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
-            <property value="11" name="auxiliary;index"/>
+            <property value="12" name="auxiliary;index"/>
         </properties>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#3">
             <graphicalData height="0" width="0" y="0" x="0"/>
@@ -181,7 +178,7 @@
                     <property name="encoding"/>
                     <property name="outputPattern"/>
                     <property name="mimeType"/>
-                    <property value="12" name="auxiliary;index"/>
+                    <property value="13" name="auxiliary;index"/>
                     <property value="10000" name="responseTimeout"/>
                     <property name="connector-ref"/>
                 </properties>
@@ -192,7 +189,7 @@
                     <property value="true" name="returnResult"/>
                     <property value="no/schibsted/xml/finance/invoice/v1/invoice.xsd" name="schemaLocations"/>
                     <property name="schemaLanguage"/>
-                    <property value="13" name="auxiliary;index"/>
+                    <property value="14" name="auxiliary;index"/>
                 </properties>
             </pattern>
             <pattern type="org.mule.tooling.ui.modules.core.pattern.splitter" name="Splitter" entity-id="Splitter#1">
@@ -204,7 +201,7 @@
                     <property name="enableCorrelation"/>
                     <property name="evaluator"/>
                     <property name="tracking:enable-default-events"/>
-                    <property value="14" name="auxiliary;index"/>
+                    <property value="15" name="auxiliary;index"/>
                 </properties>
             </pattern>
             <scope type="http://www.mulesoft.org/schema/mule/core/foreach" name="For Each" entity-id="For Each#1">
@@ -214,7 +211,7 @@
                     <property name="rootMessageVariableName"/>
                     <property name="batchSize"/>
                     <property name="collection"/>
-                    <property value="15" name="auxiliary;index"/>
+                    <property value="16" name="auxiliary;index"/>
                 </properties>
                 <compartment entity-id="compartment#1">
                     <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#4">
@@ -222,7 +219,7 @@
                             <graphicalData height="0" width="0" y="0" x="0"/>
                             <properties>
 <property value="service-flow" name="name"/>
-<property value="16" name="auxiliary;index"/>
+<property value="17" name="auxiliary;index"/>
                             </properties>
                         </pattern>
                     </lane>
@@ -230,5 +227,4 @@
             </scope>
         </lane>
     </flow>
-    <description></description>
 </mule-configuration>
