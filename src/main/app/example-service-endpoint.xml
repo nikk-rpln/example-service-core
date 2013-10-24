@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This is an example of an endpoint deployment.
+The endpoint deployments are responsible for exposing an endpoint for one particular client.
 
+Ones an invocation is received, it's transformed to the canonical model and then a generic service deployed as a separate deployment
+is invoked. 
+When the response is received from the generic service, it's transformed to the format this client expects before being returned.
+ -->
 <mule xmlns:file="http://www.mulesoft.org/schema/mule/file"
     xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
     xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
@@ -8,6 +15,7 @@
     xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
     xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.4.0"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
@@ -15,44 +23,68 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/3.1/mule-pattern.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+
+    <!-- 
+        Set the properties to be used in this flow. 
+        The invoice-environment.properties will be provided with the Mule installation
+      -->
     <spring:beans>
-    <context:property-placeholder
-             location="classpath:mule-app.properties,
-                       classpath:mule-app-override.properties" />
-  </spring:beans>
-  
-    <flow name="service-flow" doc:name="service-flow">
-        <vm:inbound-endpoint exchange-pattern="one-way"
-            path="/service/asynch" doc:name="example-service-wm-queue" />
-        <mulexml:xslt-transformer
-            maxIdleTransformers="2" maxActiveTransformers="5"
-            xsl-file="no/schibsted/xml/transform/from/backend/invoice.xslt"
-            doc:name="Transform to Canonical" />
-        <http:outbound-endpoint exchange-pattern="request-response"
-            host="localhost" port="8081" method="POST" doc:name="Call Core Service" />
-    </flow>
-    <flow name="sync-service-endpoint-flow" doc:name="sync-service-endpoint-flow">
+        <context:property-placeholder
+             ignore-resource-not-found="true" ignore-unresolvable="true"
+             location="classpath:example-service-core.properties,
+                       classpath:invoice-environment.properties" />
+    </spring:beans>
+
+    <!-- This flow exposes an Webservice endpoint to the client -->
+    <flow name="webservice-endpoint" doc:name="webservice-endpoint">
+        <!-- HTTP listener. All host+port configurations are specified with properties in order to enable overriding them per environment -->
         <http:inbound-endpoint exchange-pattern="request-response"
-            host="localhost" port="8081" doc:name="Sync HTTP" />
+            host="${invoice.exampleservice.endpoint.host}" port="${invoice.exampleservice.endpoint.port}" doc:name="Sync HTTP" path="${invoice.exampleservice.endpoint.path}"/>
+        <!-- SOAP proxy exposing the WSDL the client expects -->
+        <cxf:proxy-service namespace="http://www.invoice.com/Invoice"
+                        service="InvoiceService" payload="body" 
+                        wsdlLocation="no/schibsted/xml/from/client/endpoint.wsdl"
+                        enableMuleSoapHeaders="false" doc:name="SOAP" />
+         <!-- Transform to XML (to enable logging of the message) -->
+         <mulexml:dom-to-xml-transformer returnClass="java.lang.String"></mulexml:dom-to-xml-transformer>
+         <!-- Log the received message -->
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <!-- Validate request using an XML Schema -->
         <mulexml:schema-validation-filter
-            schemaLocations="no/schibsted/xml/finance/invoice/v1/invoice.xsd"
-            returnResult="true" doc:name="Schema Validation" />
-        <flow-ref name="service-flow" doc:name="Call Service Endpoint Flow" />
+            schemaLocations="no/schibsted/xml/from/client/client.xsd"
+            returnResult="true" doc:name="Schema Validations" />
+        <!-- Call subflow which will transform to canonical format and call generic service -->
+        <flow-ref name="transform-and-invoke-service" doc:name="Flow Reference"/>
     </flow>
-    <flow name="example-service-endpointFlow1" doc:name="example-service-endpointFlow1">
+    
+    <!-- This flow exposes an File endpoint to the client -->
+    <flow name="file-endpoint" doc:name="file-endpoint">
+        <!-- Specify which directory to be polled for new files -->
         <file:inbound-endpoint path="${invoice.input.path}"
             moveToDirectory="${invoice.archive.path}" responseTimeout="10000"
             doc:name="File" />
+        <!-- Log the received message to file -->
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <!-- Validate the content of the file -->
         <mulexml:schema-validation-filter
             schemaLocations="no/schibsted/xml/finance/invoice/v1/invoice.xsd"
             returnResult="true" doc:name="Schema Validation" />
-        <splitter expression="#[xpath:/Invoice]" doc:name="Splitter" />
-        <foreach doc:name="For Each">
-            <flow-ref name="service-flow" doc:name="Flow Reference" />
-        </foreach>
+        <!-- Call subflow which will transform to canonical format and call generic service -->
+        <flow-ref name="transform-and-invoke-service" doc:name="Flow Reference"/>
     </flow>
+    
+    <!-- Subflow responsible for transforming to canonical format and call generic service -->
+    <sub-flow name="transform-and-invoke-service" doc:name="transform-and-invoke-service">
+        <!-- Transform to canonical format -->
+        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" xsl-file="no/schibsted/xml/transform/from/backend/invoice.xslt" doc:name="Transform to Canonical"/>
+        <!-- Call generic service through an HTTP endpoint -->
+        <http:outbound-endpoint exchange-pattern="request-response" host="${invoice.exampleservice.core.host}" port="${invoice.exampleservice.core.port}" method="POST" doc:name="Call Generic Service" path="${invoice.exampleservice.core.path}"/>
+        <!-- Set the response payload -->
+        <set-payload value="&lt;INVOICE-RESPONSE xmlns=&quot;http://www.invoice.com/Invoice&quot;&gt;&lt;RESPONSE&gt;Ok&lt;/RESPONSE&gt;&lt;/INVOICE-RESPONSE&gt;" doc:name="Set Response"/>
+    </sub-flow>
 </mule>
