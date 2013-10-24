@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+    xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.4.0"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+    <!--  JUST A MOCK BACKEND SERVICE. ONLY AVAILABLE IN ORDER TO TEST ENDPOINT AND CORE FLOWS -->
+
+    <!-- Set the properties to be used in this flow. The invoice-environment.properties 
+        will be provided with the Mule installation -->
+    <spring:beans>
+        <context:property-placeholder
+            ignore-resource-not-found="true" ignore-unresolvable="true"
+            location="classpath:example-service-core.properties,
+                       classpath:invoice-environment.properties" />
+    </spring:beans>
+
+    <flow name="example-service-backend" doc:name="example-service-backend"
+        doc:description="This is just a mock-up of a backend service. The actual backend service of an integration is the backend system integrating towards.
+Only present in this example to enable running the example endpoint and example core flows.">
+        <http:inbound-endpoint exchange-pattern="request-response"
+            host="${invoice.exampleservice.backend.host}" port="${invoice.exampleservice.backend.port}"
+            path="${invoice.exampleservice.backend.path}" doc:name="HTTP" />
+                     <!-- Transform to XML (to enable logging of the message) -->
+         <mulexml:dom-to-xml-transformer returnClass="java.lang.String"></mulexml:dom-to-xml-transformer>
+         
+        <logger message="Backend received: #[payload]" level="INFO"
+            doc:name="Logger" />
+    </flow>
+
+
+</mule>

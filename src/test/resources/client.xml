@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inv:INVOICE xmlns:inv="http://www.invoice.com/Invoice">
+    <SUPPLIER>SUPPLIER</SUPPLIER>
+    <SUPPLIER_EMAIL>SUPPLIER.EMAIL</SUPPLIER_EMAIL>
+    <BUYER>BUYER</BUYER>
+    <BUYER_EMAIL>BUYER.EMAIL</BUYER_EMAIL>
+</inv:INVOICE>

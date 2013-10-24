@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:tns="http://www.invoice.com/Invoice"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+name="InvoiceService"
+targetNamespace="http://www.invoice.com/Invoice">
+    
+    <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.invoice.com/Invoice" targetNamespace="http://www.invoice.com/Invoice" elementFormDefault="qualified">
+    <xsd:element name="SUPPLIER" type="tns:stringType"/>
+    <xsd:element name="SUPPLIER_EMAIL" type="tns:stringType"/>
+    <xsd:element name="BUYER" type="tns:stringType"/>
+    <xsd:element name="BUYER_EMAIL" type="tns:stringType"/>
+    <xsd:simpleType name="stringType">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    
+    <xsd:element name="INVOICE">
+        <xsd:complexType>
+            <xsd:sequence> 
+                <xsd:element ref="tns:SUPPLIER" />
+                <xsd:element ref="tns:SUPPLIER_EMAIL" />
+                <xsd:element ref="tns:BUYER" />
+                <xsd:element ref="tns:BUYER_EMAIL" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    
+    <xsd:element name="INVOICE-RESPONSE">
+        <xsd:complexType>
+            <xsd:sequence> 
+                <xsd:element name="RESPONSE" type="xsd:string"></xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    </xsd:schema>
+    </wsdl:types>
+    
+    
+    <wsdl:message name="InvoiceRequest" xmlns:tns="http://www.invoice.com/Invoice">
+        <wsdl:part name="body" element="tns:INVOICE"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="InvoiceResponse">
+        <wsdl:part name="body" element="tns:INVOICE-RESPONSE"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="InvoicePortType">
+        <wsdl:operation name="InvoiceOperation">
+            <wsdl:input message="tns:InvoiceRequest"></wsdl:input>
+            <wsdl:output message="tns:InvoiceResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="InvoiceBinding" type="tns:InvoicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="InvoiceOperation">
+            <soap:operation soapAction="http://www.invoice.com/Invoice/NewInvoice" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="InvoiceService">
+        <wsdl:port name="InvoicePort" binding="tns:InvoiceBinding">
+            <soap:address location="TBD" />
+        </wsdl:port>
+    </wsdl:service></wsdl:definitions>

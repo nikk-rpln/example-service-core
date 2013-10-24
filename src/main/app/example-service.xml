@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.4.0"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+    <!-- Set the properties to be used in this flow. The invoice-environment.properties 
+        will be provided with the Mule installation -->
+    <spring:beans>
+        <context:property-placeholder
+            ignore-resource-not-found="true" ignore-unresolvable="true"
+            location="classpath:example-service-core.properties,
+                       classpath:invoice-environment.properties" />
+    </spring:beans>
+
+    <!-- This message property transformer is used when calling backend using 
+        the outbound HTTP endpoint below -->
+    <!-- It sets the SOAPAction header -->
+    <message-properties-transformer name="SetSOAPheaders"
+        doc:name="Message Properties">
+        <add-message-property key="SOAPAction"
+            value="&quot;Echo&quot;" />
+    </message-properties-transformer>
+
+    <!-- Service must be exposed throught a HTTP endpoint since this service 
+        shall be available to other flows deployed as part of other applications. 
+        It's possible to use simple TCP endpoints as well which would then enable 
+        calling applications to serialize the Mule message to the endpoint. -->
+    <flow name="generic-service-endpoint" doc:name="generic-service-endpoint">
+        <!-- All host+port configurations are extracted to properties in 
+            order to enable different deployment environments -->
+        <http:inbound-endpoint exchange-pattern="request-response"
+            host="${invoice.exampleservice.core.host}" port="${invoice.exampleservice.core.port}"
+            doc:name="HTTP" path="${invoice.exampleservice.core.path}" />
+                 <!-- Transform to XML (to enable logging of the message) -->
+         <mulexml:dom-to-xml-transformer returnClass="java.lang.String"></mulexml:dom-to-xml-transformer>
+        
+        <logger message="Core services received: #[payload]"
+            level="INFO" doc:name="Logger" />
+        <mulexml:xslt-transformer
+            maxIdleTransformers="2" maxActiveTransformers="5"
+            doc:name="Transform to backend format" xsl-file="no/schibsted/xml/to/backend/from-canonical.xslt">
+            <mulexml:xslt-text></mulexml:xslt-text>
+        </mulexml:xslt-transformer>
+        <flow-ref name="call-backend" doc:name="Flow Reference" />
+        <logger message="Core service after invoking backend: #[payload]" level="INFO" doc:name="Logger"/>
+        <mulexml:xslt-transformer
+            maxIdleTransformers="2" maxActiveTransformers="5"
+            doc:name="Transform to canonical" xsl-file="no/schibsted/xml/from/backend/to-canonical.xslt">
+            <mulexml:xslt-text></mulexml:xslt-text>
+        </mulexml:xslt-transformer>
+        <!-- From here on we shall transform the message to the format the 
+            backend service expects, call the backend service and transform the response 
+            to canonical format -->
+    </flow>
+    <sub-flow name="call-backend" doc:name="call-backend">
+        <cxf:proxy-client payload="body"
+            enableMuleSoapHeaders="true" doc:name="SOAP" />
+        <http:outbound-endpoint exchange-pattern="request-response"
+            host="${invoice.exampleservice.backend.host}" port="${invoice.exampleservice.backend.port}"
+            doc:name="HTTP" path="${invoice.exampleservice.backend.path}"
+            transformer-refs="SetSOAPheaders" method="POST" />
+    </sub-flow>
+</mule>
