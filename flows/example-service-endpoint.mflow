@@ -9,25 +9,20 @@
             <property name="system-properties-mode"/>
             <property name="file-encoding"/>
             <property value="beans@spring@http://www.springframework.org/schema/beans" name="auxiliary;wrappedIn"/>
-            <property value="true" name="ignore-resource-not-found"/>
-            <property value="true" name="ignore-unresolvable"/>
-            <property value="2" name="auxiliary;index"/>
             <property value="1" name="auxiliary;wrapIn"/>
+            <property value="2" name="auxiliary;index"/>
+            <property value="true" name="ignore-unresolvable"/>
+            <property value="true" name="ignore-resource-not-found"/>
         </properties>
     </global-element>
-    <flow SubFlow="false" name="webservice-endpoint" entity-id="baf59b69-f1b2-45b5-8141-2ff850076405">
+    <flow SubFlow="false" name="webservice-endpoint" entity-id="80c79b2d-4949-4838-ad3e-93592e0b7edc">
         <properties>
-            <property name="updated"/>
-            <property value="" name="processingStrategy2"/>
-            <property value="" name="bussinessEventsLabel"/>
-            <property value="false" name="tracking:enable-default-events"/>
-            <property value="true" name="auxiliary;erased;processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="processingStrategy2"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
             <property value="3" name="auxiliary;index"/>
-            <property-collection name="@http://www.mulesoft.org/schema/mule/ee/tracking/transaction;22883785">
-                <property value="true" name="isProcessed$$$$"/>
-            </property-collection>
         </properties>
-        <description></description>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#1">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <endpoint message-exchange-pattern="RequestResponse" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="Sync HTTP" entity-id="HTTP#1">
@@ -45,17 +40,17 @@
                     <property value="request-response" name="exchange-pattern"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property value="${invoice.exampleservice.endpoint.path}" name="path"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property value="4" name="auxiliary;index"/>
-                    <property name="mimeType"/>
                     <property name="responseTimeout"/>
+                    <property name="mimeType"/>
+                    <property value="4" name="auxiliary;index"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -74,8 +69,8 @@
                     <property name="onException"/>
                     <property value="InvoiceService" name="service"/>
                     <property name="mtomEnabled"/>
-                    <property value="false" name="enableMuleSoapHeaders"/>
                     <property name="soapVersion"/>
+                    <property value="false" name="enableMuleSoapHeaders"/>
                     <property value="5" name="auxiliary;index"/>
                 </properties>
             </pattern>
@@ -104,27 +99,20 @@
             <pattern type="http://www.mulesoft.org/schema/mule/core/flow-ref" name="Flow Reference" entity-id="Flow Reference#1">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property name="updated"/>
                     <property value="transform-and-invoke-service" name="name"/>
                     <property value="9" name="auxiliary;index"/>
                 </properties>
-                <description></description>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="file-endpoint" entity-id="bb8a9d66-aa87-462c-951b-7a3892bc9f80">
+    <flow SubFlow="false" name="file-endpoint" entity-id="5eda27db-b45f-4a9e-afda-bc55a6895998">
         <properties>
-            <property name="updated"/>
-            <property value="" name="processingStrategy2"/>
-            <property value="" name="bussinessEventsLabel"/>
-            <property value="false" name="tracking:enable-default-events"/>
-            <property value="true" name="auxiliary;erased;processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="processingStrategy2"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
             <property value="10" name="auxiliary;index"/>
-            <property-collection name="@http://www.mulesoft.org/schema/mule/ee/tracking/transaction;29230126">
-                <property value="true" name="isProcessed$$$$"/>
-            </property-collection>
         </properties>
-        <description></description>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#2">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/file/endpoint" name="File" entity-id="File#1">
@@ -143,12 +131,12 @@
                     <property value="${invoice.archive.path}" name="moveToDirectory"/>
                     <property name="address"/>
                     <property name="fileAge"/>
-                    <property name="encoding"/>
                     <property value="${invoice.input.path}" name="path"/>
+                    <property name="encoding"/>
                     <property name="outputPattern"/>
-                    <property value="10000" name="responseTimeout"/>
-                    <property value="11" name="auxiliary;index"/>
                     <property name="mimeType"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="10000" name="responseTimeout"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -165,79 +153,76 @@
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
                     <property value="true" name="returnResult"/>
-                    <property value="no/schibsted/xml/finance/invoice/v1/invoice.xsd" name="schemaLocations"/>
-                    <property name="schemaLanguage"/>
+                    <property name="updated"/>
+                    <property value="no/schibsted/xml/from/client/client.xsd" name="schemaLocations"/>
+                    <property value="" name="schemaLanguage"/>
                     <property value="13" name="auxiliary;index"/>
                 </properties>
+                <description></description>
             </pattern>
             <pattern type="http://www.mulesoft.org/schema/mule/core/flow-ref" name="Flow Reference" entity-id="Flow Reference#2">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property name="updated"/>
                     <property value="transform-and-invoke-service" name="name"/>
                     <property value="14" name="auxiliary;index"/>
                 </properties>
-                <description></description>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="true" name="transform-and-invoke-service" entity-id="f4072700-4db3-4afe-aab3-2ff9d5c4915c">
+    <flow SubFlow="true" name="transform-and-invoke-service" entity-id="7e8e1601-62b4-475e-af0c-78d1720050ea">
         <properties>
-            <property name="updated"/>
+            <property name="processingStrategy"/>
+            <property name="processingStrategy2"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
             <property value="15" name="auxiliary;index"/>
         </properties>
-        <description></description>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#3">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <pattern type="http://www.mulesoft.org/schema/mule/xml/xslt-transformer" name="Transform to Canonical" entity-id="XSLT#1">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
                     <property name="returnClass"/>
-                    <property name="ignoreBadInput"/>
                     <property value="no/schibsted/xml/transform/from/backend/invoice.xslt" name="xsl-file"/>
+                    <property name="ignoreBadInput"/>
                     <property value="5" name="maxActiveTransformers"/>
                     <property name="encoding"/>
                     <property name="transformerFactoryClass"/>
                     <property name="outputEncoding"/>
-                    <property value="16" name="auxiliary;index"/>
                     <property name="mimeType"/>
-                    <property name="uriResolver-ref"/>
+                    <property value="16" name="auxiliary;index"/>
                     <property value="2" name="maxIdleTransformers"/>
+                    <property name="uriResolver-ref"/>
                 </properties>
             </pattern>
             <endpoint message-exchange-pattern="RequestResponse" direction="Outbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="Call Generic Service" entity-id="HTTP#2">
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
-                    <property value="true" name="auxiliary;erased;mimeType"/>
                     <property value="${invoice.exampleservice.core.port}" name="port"/>
-                    <property value="" name="contentType"/>
-                    <property value="" name="password"/>
-                    <property value="request-response" name="exchange-pattern"/>
-                    <property value="false" name="tracking:enable-default-events"/>
-                    <property name="updated"/>
-                    <property value="true" name="auxiliary;erased;encoding"/>
-                    <property value="${invoice.exampleservice.core.path}" name="path"/>
-                    <property value="" name="encoding"/>
-                    <property value="" name="responseTransformer-refs"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property value="" name="mimeType"/>
-                    <property value="10000" name="responseTimeout"/>
-                    <property value="true" name="auxiliary;erased;contentType"/>
                     <property value="${invoice.exampleservice.core.host}" name="host"/>
-                    <property value="" name="businessEventsLabel"/>
-                    <property value="false" name="followRedirects"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="followRedirects"/>
                     <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
-                    <property value="false" name="keep-alive"/>
-                    <property value="false" name="disableTransportTransformer"/>
-                    <property value="" name="ref"/>
-                    <property value="" name="httpLabel"/>
-                    <property value="" name="transformer-refs"/>
-                    <property value="" name="address"/>
+                    <property name="keep-alive"/>
+                    <property name="contentType"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="password"/>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
+                    <property name="address"/>
+                    <property value="${invoice.exampleservice.core.path}" name="path"/>
+                    <property name="encoding"/>
+                    <property name="responseTransformer-refs"/>
                     <property value="POST" name="method"/>
-                    <property value="" name="user"/>
-                    <property value="" name="connector-ref"/>
+                    <property name="user"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
+                    <property value="17" name="auxiliary;index"/>
+                    <property name="connector-ref"/>
                 </properties>
-                <description></description>
             </endpoint>
             <pattern type="http://www.mulesoft.org/schema/mule/core/set-payload" name="Set Response" entity-id="Set Payload#1">
                 <graphicalData height="0" width="0" y="0" x="0"/>

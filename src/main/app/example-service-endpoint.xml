@@ -72,7 +72,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
         <logger message="#[payload]" level="INFO" doc:name="Logger"/>
         <!-- Validate the content of the file -->
         <mulexml:schema-validation-filter
-            schemaLocations="no/schibsted/xml/finance/invoice/v1/invoice.xsd"
+            schemaLocations="no/schibsted/xml/from/client/client.xsd"
             returnResult="true" doc:name="Schema Validation" />
         <!-- Call subflow which will transform to canonical format and call generic service -->
         <flow-ref name="transform-and-invoke-service" doc:name="Flow Reference"/>
