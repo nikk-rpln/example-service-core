@@ -9,24 +9,33 @@
             <property name="system-properties-mode"/>
             <property name="file-encoding"/>
             <property value="beans@spring@http://www.springframework.org/schema/beans" name="auxiliary;wrappedIn"/>
-            <property value="1" name="auxiliary;wrapIn"/>
-            <property value="2" name="auxiliary;index"/>
-            <property value="true" name="ignore-unresolvable"/>
             <property value="true" name="ignore-resource-not-found"/>
+            <property value="true" name="ignore-unresolvable"/>
+            <property value="2" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;wrapIn"/>
         </properties>
     </global-element>
-    <flow SubFlow="false" name="webservice-endpoint" entity-id="80c79b2d-4949-4838-ad3e-93592e0b7edc">
+    <global-element type="http://www.mulesoft.org/schema/mule/xml/schema-validation-filter" name="Schema Validation" entity-id="!!!fcb0ff6c-0b9b-4bb5-911e-92bd65d63598">
+        <properties>
+            <property value="true" name="returnResult"/>
+            <property value="ClientRequestValidation" name="name"/>
+            <property value="no/schibsted/xml/from/client/client.xsd" name="schemaLocations"/>
+            <property value="" name="schemaLanguage"/>
+        </properties>
+        <description></description>
+    </global-element>
+    <flow SubFlow="false" name="webservice-endpoint" entity-id="d3f2a16b-dcdf-4e3f-bb6f-9599b1155632">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
             <property name="bussinessEventsLabel"/>
-            <property name="tracking:enable-default-events"/>
             <property value="3" name="auxiliary;index"/>
+            <property name="tracking:enable-default-events"/>
         </properties>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#1">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <endpoint message-exchange-pattern="RequestResponse" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="Sync HTTP" entity-id="HTTP#1">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="169" width="70" y="62" x="19"/>
                 <properties>
                     <property value="${invoice.exampleservice.endpoint.port}" name="port"/>
                     <property value="${invoice.exampleservice.endpoint.host}" name="host"/>
@@ -40,22 +49,22 @@
                     <property value="request-response" name="exchange-pattern"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="transformer-refs"/>
                     <property name="httpLabel"/>
+                    <property name="transformer-refs"/>
                     <property name="address"/>
-                    <property value="${invoice.exampleservice.endpoint.path}" name="path"/>
                     <property name="encoding"/>
+                    <property value="${invoice.exampleservice.endpoint.path}" name="path"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="responseTimeout"/>
-                    <property name="mimeType"/>
                     <property value="4" name="auxiliary;index"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
             <pattern type="http://www.mulesoft.org/schema/mule/cxf/soapComponent" name="SOAP" entity-id="SOAP#1">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="169" width="68" y="62" x="149"/>
                 <properties>
                     <property name="port"/>
                     <property value="no/schibsted/xml/from/client/endpoint.wsdl" name="wsdlLocation"/>
@@ -69,17 +78,17 @@
                     <property name="onException"/>
                     <property value="InvoiceService" name="service"/>
                     <property name="mtomEnabled"/>
-                    <property name="soapVersion"/>
                     <property value="false" name="enableMuleSoapHeaders"/>
+                    <property name="soapVersion"/>
                     <property value="5" name="auxiliary;index"/>
                 </properties>
             </pattern>
             <unknown index="6" description="false" entity-id="unknown#1">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="61" width="202" y="65" x="277"/>
                 <content>&lt;mulexml:dom-to-xml-transformer xmlns:mulexml=&quot;http://www.mulesoft.org/schema/mule/xml&quot; returnClass=&quot;java.lang.String&quot;/&gt;</content>
             </unknown>
             <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="Logger#1">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="67" width="68" y="62" x="539"/>
                 <properties>
                     <property value="#[payload]" name="message"/>
                     <property name="category"/>
@@ -87,17 +96,21 @@
                     <property value="7" name="auxiliary;index"/>
                 </properties>
             </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/xml/schema-validation-filter" name="Schema Validations" entity-id="Schema Validation#1">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/message-filter" name="Validate Client Request" entity-id="571b30b9-e064-49f9-9178-e689624caf9e">
+                <graphicalData height="67" width="68" y="62" x="795"/>
                 <properties>
-                    <property value="true" name="returnResult"/>
-                    <property value="no/schibsted/xml/from/client/client.xsd" name="schemaLocations"/>
-                    <property name="schemaLanguage"/>
-                    <property value="8" name="auxiliary;index"/>
+                    <property value="" name="onUnaccepted"/>
+                    <property name="updated"/>
+                    <property value="true" name="throwOnUnaccepted"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/filter;25409973">
+                        <property value="ClientRequestValidation" name="ref"/>
+                        <property value="true" name="isProcessed$$$$"/>
+                    </property-collection>
                 </properties>
+                <description></description>
             </pattern>
             <pattern type="http://www.mulesoft.org/schema/mule/core/flow-ref" name="Flow Reference" entity-id="Flow Reference#1">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="67" width="95" y="62" x="923"/>
                 <properties>
                     <property value="transform-and-invoke-service" name="name"/>
                     <property value="9" name="auxiliary;index"/>
@@ -105,18 +118,18 @@
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="file-endpoint" entity-id="5eda27db-b45f-4a9e-afda-bc55a6895998">
+    <flow SubFlow="false" name="file-endpoint" entity-id="93f8e3b5-52cd-4981-884c-9f88c721e148">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
             <property name="bussinessEventsLabel"/>
-            <property name="tracking:enable-default-events"/>
             <property value="10" name="auxiliary;index"/>
+            <property name="tracking:enable-default-events"/>
         </properties>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#2">
             <graphicalData height="0" width="0" y="0" x="0"/>
             <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/file/endpoint" name="File" entity-id="File#1">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="67" width="68" y="307" x="19"/>
                 <properties>
                     <property name="reverseOrder"/>
                     <property name="moveToPattern"/>
@@ -131,17 +144,17 @@
                     <property value="${invoice.archive.path}" name="moveToDirectory"/>
                     <property name="address"/>
                     <property name="fileAge"/>
-                    <property value="${invoice.input.path}" name="path"/>
                     <property name="encoding"/>
+                    <property value="${invoice.input.path}" name="path"/>
                     <property name="outputPattern"/>
-                    <property name="mimeType"/>
-                    <property value="11" name="auxiliary;index"/>
                     <property value="10000" name="responseTimeout"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
             <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="Logger#2">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="67" width="68" y="307" x="147"/>
                 <properties>
                     <property value="#[payload]" name="message"/>
                     <property name="category"/>
@@ -149,19 +162,21 @@
                     <property value="12" name="auxiliary;index"/>
                 </properties>
             </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/xml/schema-validation-filter" name="Schema Validation" entity-id="Schema Validation#2">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/message-filter" name="Validate Client Request" entity-id="b7d175cc-1368-4ece-9b5b-335e64fa1b5b">
+                <graphicalData height="67" width="138" y="307" x="447"/>
                 <properties>
-                    <property value="true" name="returnResult"/>
+                    <property value="" name="onUnaccepted"/>
                     <property name="updated"/>
-                    <property value="no/schibsted/xml/from/client/client.xsd" name="schemaLocations"/>
-                    <property value="" name="schemaLanguage"/>
-                    <property value="13" name="auxiliary;index"/>
+                    <property value="true" name="throwOnUnaccepted"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/filter;12762324">
+                        <property value="ClientRequestValidation" name="ref"/>
+                        <property value="true" name="isProcessed$$$$"/>
+                    </property-collection>
                 </properties>
                 <description></description>
             </pattern>
             <pattern type="http://www.mulesoft.org/schema/mule/core/flow-ref" name="Flow Reference" entity-id="Flow Reference#2">
-                <graphicalData height="0" width="0" y="0" x="0"/>
+                <graphicalData height="67" width="95" y="307" x="645"/>
                 <properties>
                     <property value="transform-and-invoke-service" name="name"/>
                     <property value="14" name="auxiliary;index"/>
@@ -169,13 +184,13 @@
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="true" name="transform-and-invoke-service" entity-id="7e8e1601-62b4-475e-af0c-78d1720050ea">
+    <flow SubFlow="true" name="transform-and-invoke-service" entity-id="d51884ed-6905-430e-9c9e-009393440935">
         <properties>
             <property name="processingStrategy"/>
             <property name="processingStrategy2"/>
             <property name="bussinessEventsLabel"/>
-            <property name="tracking:enable-default-events"/>
             <property value="15" name="auxiliary;index"/>
+            <property name="tracking:enable-default-events"/>
         </properties>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#3">
             <graphicalData height="0" width="0" y="0" x="0"/>
@@ -183,16 +198,16 @@
                 <graphicalData height="0" width="0" y="0" x="0"/>
                 <properties>
                     <property name="returnClass"/>
-                    <property value="no/schibsted/xml/transform/from/backend/invoice.xslt" name="xsl-file"/>
                     <property name="ignoreBadInput"/>
+                    <property value="no/schibsted/xml/transform/from/backend/invoice.xslt" name="xsl-file"/>
                     <property value="5" name="maxActiveTransformers"/>
                     <property name="encoding"/>
                     <property name="transformerFactoryClass"/>
                     <property name="outputEncoding"/>
-                    <property name="mimeType"/>
                     <property value="16" name="auxiliary;index"/>
-                    <property value="2" name="maxIdleTransformers"/>
+                    <property name="mimeType"/>
                     <property name="uriResolver-ref"/>
+                    <property value="2" name="maxIdleTransformers"/>
                 </properties>
             </pattern>
             <endpoint message-exchange-pattern="RequestResponse" direction="Outbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="Call Generic Service" entity-id="HTTP#2">
@@ -210,17 +225,17 @@
                     <property value="request-response" name="exchange-pattern"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="transformer-refs"/>
                     <property name="httpLabel"/>
+                    <property name="transformer-refs"/>
                     <property name="address"/>
-                    <property value="${invoice.exampleservice.core.path}" name="path"/>
                     <property name="encoding"/>
+                    <property value="${invoice.exampleservice.core.path}" name="path"/>
                     <property name="responseTransformer-refs"/>
                     <property value="POST" name="method"/>
                     <property name="user"/>
-                    <property name="responseTimeout"/>
-                    <property name="mimeType"/>
                     <property value="17" name="auxiliary;index"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>

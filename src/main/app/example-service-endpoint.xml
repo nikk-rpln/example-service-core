@@ -39,6 +39,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
              location="classpath:example-service-core.properties,
                        classpath:invoice-environment.properties" />
     </spring:beans>
+    <mulexml:schema-validation-filter schemaLocations="no/schibsted/xml/from/client/client.xsd" returnResult="true" name="ClientRequestValidation" doc:name="Schema Validation"/>
 
     <!-- This flow exposes an Webservice endpoint to the client -->
     <flow name="webservice-endpoint" doc:name="webservice-endpoint">
@@ -54,10 +55,10 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
          <mulexml:dom-to-xml-transformer returnClass="java.lang.String"></mulexml:dom-to-xml-transformer>
          <!-- Log the received message -->
         <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <message-filter throwOnUnaccepted="true" doc:name="Validate Client Request">
+            <filter ref="ClientRequestValidation"/>
+        </message-filter>
         <!-- Validate request using an XML Schema -->
-        <mulexml:schema-validation-filter
-            schemaLocations="no/schibsted/xml/from/client/client.xsd"
-            returnResult="true" doc:name="Schema Validations" />
         <!-- Call subflow which will transform to canonical format and call generic service -->
         <flow-ref name="transform-and-invoke-service" doc:name="Flow Reference"/>
     </flow>
@@ -70,10 +71,10 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
             doc:name="File" />
         <!-- Log the received message to file -->
         <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <message-filter throwOnUnaccepted="true" doc:name="Validate Client Request">
+            <filter ref="ClientRequestValidation"/>
+        </message-filter>
         <!-- Validate the content of the file -->
-        <mulexml:schema-validation-filter
-            schemaLocations="no/schibsted/xml/from/client/client.xsd"
-            returnResult="true" doc:name="Schema Validation" />
         <!-- Call subflow which will transform to canonical format and call generic service -->
         <flow-ref name="transform-and-invoke-service" doc:name="Flow Reference"/>
     </flow>
